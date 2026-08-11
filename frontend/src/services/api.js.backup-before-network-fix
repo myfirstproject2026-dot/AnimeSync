@@ -1,0 +1,157 @@
+const API_BASE = "http://127.0.0.1:5000/api/v1";
+
+async function request(path, options = {}) {
+  const token = localStorage.getItem("animesync_token");
+
+  const headers = {
+    "Content-Type": "application/json",
+    ...(options.headers || {})
+  };
+
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const response = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers
+  });
+
+  const data = await response.json().catch(() => ({
+    success: false,
+    message: "Invalid server response"
+  }));
+
+  if (!response.ok) {
+    throw new Error(data.message || "Request failed");
+  }
+
+  return data;
+}
+
+/* AUTH */
+
+export async function registerUser(data) {
+  return request("/auth/register", {
+    method: "POST",
+    body: JSON.stringify(data)
+  });
+}
+
+export async function loginUser(data) {
+  return request("/auth/login", {
+    method: "POST",
+    body: JSON.stringify(data)
+  });
+}
+
+/* PROFILE */
+
+export async function getMyProfile() {
+  return request("/profile/me");
+}
+
+export async function getProfile(username) {
+  return request(`/users/${encodeURIComponent(username)}`);
+}
+
+export async function updateMyProfile(data) {
+  return request("/profile/me", {
+    method: "PATCH",
+    body: JSON.stringify(data)
+  });
+}
+
+/* POSTS */
+
+export async function getFeed() {
+  return request("/posts/feed");
+}
+
+export async function createPost(data) {
+  return request("/posts", {
+    method: "POST",
+    body: JSON.stringify(data)
+  });
+}
+
+/* FOLLOW */
+
+export async function followUser(userId) {
+  return request(`/users/${userId}/follow`, {
+    method: "POST"
+  });
+}
+
+export async function unfollowUser(userId) {
+  return request(`/users/${userId}/follow`, {
+    method: "DELETE"
+  });
+}
+
+export async function getFollowers(userId) {
+  return request(`/users/${userId}/followers`);
+}
+
+export async function getFollowing(userId) {
+  return request(`/users/${userId}/following`);
+}
+
+/* ENGAGEMENT */
+
+export async function likePost(postId) {
+  return request(`/posts/${postId}/like`, {
+    method: "POST"
+  });
+}
+
+export async function unlikePost(postId) {
+  return request(`/posts/${postId}/like`, {
+    method: "DELETE"
+  });
+}
+
+export async function savePost(postId) {
+  return request(`/posts/${postId}/save`, {
+    method: "POST"
+  });
+}
+
+export async function unsavePost(postId) {
+  return request(`/posts/${postId}/save`, {
+    method: "DELETE"
+  });
+}
+
+export async function getComments(postId) {
+  return request(`/posts/${postId}/comments`);
+}
+
+export async function createComment(postId, body) {
+  return request(`/posts/${postId}/comments`, {
+    method: "POST",
+    body: JSON.stringify({ body })
+  });
+}
+
+/* GROUPED API */
+
+export const api = {
+  register: registerUser,
+  login: loginUser,
+  me: getMyProfile,
+  updateProfile: updateMyProfile,
+  feed: getFeed,
+  createPost,
+  userProfile: getProfile,
+  follow: followUser,
+  unfollow: unfollowUser,
+  getFollowers,
+  getFollowing,
+  like: likePost,
+  unlike: unlikePost,
+  save: savePost,
+  unsave: unsavePost,
+  comments: getComments,
+  createComment
+};

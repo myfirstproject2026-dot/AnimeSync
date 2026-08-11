@@ -1,0 +1,110 @@
+.app-shell {
+  min-height: 100vh;
+  background: #f7f7f8;
+  color: #171717;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom: 1px solid #e7e7e7;
+  backdrop-filter: blur(12px);
+}
+
+.brand {
+  color: #111;
+  text-decoration: none;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.topnav {
+  display: flex;
+  gap: 24px;
+}
+
+.topnav a,
+.mobile-nav a {
+  color: #666;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.topnav a.active,
+.mobile-nav a.active {
+  color: #111;
+}
+
+.main-content {
+  width: min(1100px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0 80px;
+}
+
+.mobile-nav {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .topbar {
+    height: 58px;
+    padding: 0 18px;
+  }
+
+  .topnav {
+    display: none;
+  }
+
+  .main-content {
+    width: min(100% - 24px, 620px);
+    padding-top: 20px;
+  }
+
+  .mobile-nav {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    z-index: 30;
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid #e4e4e4;
+    border-radius: 18px;
+  }
+}
+
+.create-link {
+  font-weight: 800;
+}
+
+.nav-button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.nav-button:hover {
+  opacity: 0.65;
+}
+
+.mobile-nav button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
