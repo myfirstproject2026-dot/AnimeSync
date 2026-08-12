@@ -22,6 +22,7 @@ const app = express();
 
 const allowedOrigins = [
   process.env.FRONTEND_URL,
+  "https://animesync-1.onrender.com",
   "http://localhost:5173",
   "http://127.0.0.1:5173",
   "http://172.24.204.95:5173",
@@ -35,7 +36,7 @@ app.use(
         return callback(null, true);
       }
 
-      return callback(new Error("Not allowed by CORS"));
+      return callback(new Error(`Not allowed by CORS: ${origin}`));
     },
     credentials: true
   })
