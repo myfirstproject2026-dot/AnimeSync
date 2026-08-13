@@ -1,13 +1,14 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/useAuth";
 import "./MainLayout.css";
 
 export default function MainLayout() {
   const navigate = useNavigate();
-  const token = localStorage.getItem("animesync_token");
+  const { isAuthenticated, logout } = useAuth();
 
   function handleLogout() {
-    localStorage.removeItem("animesync_token");
-    navigate("/");
+    logout();
+    navigate("/", { replace: true });
   }
 
   return (
@@ -26,10 +27,14 @@ export default function MainLayout() {
             Explore
           </NavLink>
 
-          {token ? (
+          {isAuthenticated ? (
             <>
               <NavLink to="/create" className="create-link">
                 Create
+              </NavLink>
+
+              <NavLink to="/profile/me">
+                Profile
               </NavLink>
 
               <button
@@ -61,13 +66,20 @@ export default function MainLayout() {
           Explore
         </NavLink>
 
-        {token ? (
+        {isAuthenticated ? (
           <>
             <NavLink to="/create">
               Create
             </NavLink>
 
-            <button type="button" onClick={handleLogout}>
+            <NavLink to="/profile/me">
+              Profile
+            </NavLink>
+
+            <button
+              type="button"
+              onClick={handleLogout}
+            >
               Log out
             </button>
           </>

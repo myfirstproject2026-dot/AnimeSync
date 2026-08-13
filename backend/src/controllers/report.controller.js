@@ -40,16 +40,15 @@ async function createReport(req, res) {
           target_type,
           target_id,
           reason,
-          details,
-          post_id,
-          reported_user_id
+          details
         )
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
+       VALUES ($1, $2, $3, $4, $5)
        RETURNING
          id,
          target_type,
          target_id,
          reason,
+         details,
          status,
          created_at,
          updated_at`,
@@ -58,9 +57,7 @@ async function createReport(req, res) {
         targetType,
         targetId,
         String(reason).trim(),
-        details || null,
-        postId || null,
-        reportedUserId || null
+        details || null
       ]
     );
 

@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../services/api";
+import { useAuth } from "../context/useAuth";
 import "./Page.css";
 
 export default function Register() {
   const navigate = useNavigate();
+  const { refreshUser } = useAuth();
 
   const [form, setForm] = useState({
     displayName: "",
@@ -29,8 +31,17 @@ export default function Register() {
     setLoading(true);
 
     try {
-      await registerUser(form);
-      navigate("/login");
+      const data = await registerUser(form);
+
+      if (!data.token) {
+        throw new Error("Account created but authentication token was not returned.");
+      }
+
+      localStorage.setItem("animesync_token", data.token);
+
+      await refreshUser();
+
+      navigate("/", { replace: true });
     } catch (err) {
       setError(err.message);
     } finally {

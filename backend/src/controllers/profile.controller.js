@@ -3,10 +3,38 @@ const pool = require("../config/database");
 async function getMe(req, res) {
   try {
     const result = await pool.query(
-      `SELECT id, email, username, display_name,
-              avatar_url, bio, role, status, created_at
-       FROM users
-       WHERE id = $1`,
+      `SELECT
+         u.id,
+         u.email,
+         u.username,
+         u.display_name,
+         u.avatar_url,
+         u.bio,
+         u.role,
+         u.status,
+         u.created_at,
+
+         (
+           SELECT COUNT(*)
+           FROM posts p
+           WHERE p.author_id = u.id
+             AND p.status = 'published'
+         )::int AS posts_count,
+
+         (
+           SELECT COUNT(*)
+           FROM follows f
+           WHERE f.following_id = u.id
+         )::int AS followers_count,
+
+         (
+           SELECT COUNT(*)
+           FROM follows f
+           WHERE f.follower_id = u.id
+         )::int AS following_count
+
+       FROM users u
+       WHERE u.id = $1`,
       [req.user.id]
     );
 
